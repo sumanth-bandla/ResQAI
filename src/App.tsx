@@ -15,7 +15,6 @@ import { DispatchPage } from "./pages/DispatchPage";
 import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { GenericPage } from "./pages/GenericPage";
-import { MobilePage } from "./pages/MobilePage";
 import { SourcesPage } from "./pages/SourcesPage";
 import { TrainingIncidentPage } from "./pages/TrainingIncidentPage";
 import { AccountProfilePage } from "./pages/AccountProfilePage";
@@ -68,9 +67,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.title = location.pathname.startsWith("/mobile")
-      ? "ResQAI — Mobile training simulator"
-      : location.pathname === "/register"
+    document.title = location.pathname === "/register"
         ? "ResQAI — Create account"
         : location.pathname === "/auth/callback"
           ? "ResQAI — Verify email"
@@ -87,9 +84,6 @@ function App() {
           <Route path="/login" element={authLoading ? <AuthChecking /> : session && !recoveryMode ? <Navigate to="/overview" replace /> : <LoginPage mode="login" />} />
           <Route path="/register" element={authLoading ? <AuthChecking /> : session ? <Navigate to="/overview" replace /> : <LoginPage mode="register" />} />
           <Route element={<RequireAuth session={session} loading={authLoading} error={authError} />}>
-            <Route path="/mobile" element={<MobilePage mode="overview" />} />
-            <Route path="/mobile/incidents/:id" element={<MobilePage mode="incident" />} />
-            <Route path="/mobile/review/:id" element={<MobilePage mode="review" />} />
             <Route path="/" element={<OperationsShell onSignOut={async () => {
               if (!supabase) throw new Error("Supabase authentication is not configured.");
               const { error } = await supabase.auth.signOut({ scope: "local" });

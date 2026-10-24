@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Activity, BookOpenCheck, ClipboardCheck, Database, LayoutDashboard, LifeBuoy, LogOut, Map as MapIcon,
-  Menu, Search, Settings, Shield, Siren, Users, UserRound, X,
+  Menu, Search, Settings, Siren, Users, UserRound, X,
 } from "lucide-react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Brand } from "./Brand";
@@ -52,7 +52,6 @@ export function OperationsShell({ onSignOut }: { onSignOut: () => void }) {
           <div className="nav-separator" />
           <div className="nav-section-label">SEPARATE TRAINING DEMOS</div>
           {navLinks(trainingNavigation)}
-          <NavLink to="/mobile" onClick={() => setMobileOpen(false)} className={({ isActive }) => `side-link${isActive ? " side-link--active" : ""}`}><Shield size={16} strokeWidth={1.8} /><span>Mobile simulator</span></NavLink>
         </nav>
         <div className="sidebar__bottom">
           <div className="archive-boundary-card"><Database size={14} /><strong>Read-only archive</strong><small>No live agency systems connected</small></div>

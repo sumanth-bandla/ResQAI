@@ -89,7 +89,6 @@ The visual direction is based on the [ResQAI Figma design](https://www.figma.com
 | Historical map | [`/map`](http://localhost:5173/map) |
 | Archive analytics | [`/analytics`](http://localhost:5173/analytics) |
 | Data sources and setup | [`/sources`](http://localhost:5173/sources) |
-| Training simulator | [`/mobile`](http://localhost:5173/mobile) |
 
 The local preview links work after starting Vite with `npm run dev`. Configuration and imported records are required to see archive content.
 
@@ -124,7 +123,6 @@ The local preview links work after starting Vite with `npm run dev`. Configurati
 | `/training/report`, `/training/incidents/:id` | Fictional local report-intake exercise |
 | `/training/review`, `/training/dispatch` | Fictional manual-review and dispatch-interface exercises; no AI/model is connected |
 | `/training/settings`, `/training/team`, `/training/activity` | Example-only controls, profiles, and sample activity |
-| `/mobile`, `/mobile/incidents/:id`, `/mobile/review/:id` | Separate mobile training simulator screens |
 
 Legacy `/review`, `/dispatch`, `/settings`, `/team`, and `/activity` routes redirect to their clearly labeled training versions.
 
