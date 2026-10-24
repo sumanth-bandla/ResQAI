@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Card, PageHeader, StatusMessage } from "../components/Ui";
 import { HistoryMap } from "../components/HistoryMap";
 import { PublicDataEmpty, PublicFeedNotice } from "../components/PublicFeedStatus";
+import { HistoricalAiAnalysis } from "../components/HistoricalAiAnalysis";
 import { formatHistoricalDate } from "../components/HistoricalFireTable";
 import { usePublicData } from "../dataContext";
 
@@ -46,6 +47,7 @@ export function IncidentDetailPage() {
           <Card title="Record dates" subtitle="Source incident and closure timestamps"><div className="historical-properties"><div><span>Incident date</span><strong>{formatHistoricalDate(incident.incident_date)}</strong></div><div><span>Reported closed</span><strong>{formatHistoricalDate(incident.closed_at)}</strong></div><div><span>Source record updated</span><strong>{incident.source_updated_at ? formatHistoricalDate(incident.source_updated_at) : "Not reported"}</strong></div><div><span>Imported into Supabase</span><strong>{formatHistoricalDate(incident.imported_at)}</strong></div></div></Card>
           <Card title="Published location details"><div className="historical-properties"><div><span>Address as published</span><strong>{incident.address}</strong></div><div><span>Neighborhood</span><strong>{incident.neighborhood || "Not reported"}</strong></div><div><span>ZIP code</span><strong>{incident.zipcode || "Not reported"}</strong></div><div><span>Station area</span><strong>{incident.station_area || "Not reported"}</strong></div><div><span>Battalion</span><strong>{incident.battalion || "Not reported"}</strong></div><div><span>Supervisor district</span><strong>{incident.supervisor_district || "Not reported"}</strong></div></div></Card>
           <Card title="Source and data access"><div className="source-card"><Database size={16} /><span><strong>San Francisco Fire Incidents</strong><small>City-published historic records · Supabase public table · read-only browser access</small><a href={incident.source_url} target="_blank" rel="noreferrer">Open original source <ArrowUpRight size={12} /></a></span></div></Card>
+          <HistoricalAiAnalysis mode="summary" recordId={incident.id} />
         </aside>
       </div>
     </div>

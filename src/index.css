@@ -866,6 +866,16 @@ a { color: inherit; }
 .map-location-notice, .map-location-error { display: flex; align-items: center; gap: 7px; border: 1px solid #d7e8e4; border-radius: 4px; padding: 8px 10px; color: #4a766e; background: #f2f8f5; font-size: 8px; line-height: 1.5; }
 .map-location-notice svg { flex: 0 0 auto; }
 .map-location-error { border-color: #ecd9cf; color: #8a5946; background: #fff8f3; }
+.ai-analysis-panel { display: flex; flex-direction: column; gap: 9px; padding: 0 12px 12px; }
+.ai-analysis-boundary { display: flex; align-items: flex-start; gap: 7px; border: 1px solid #f0e1bf; border-radius: 4px; padding: 8px; color: #816431; background: #fff9ec; font-size: 8px; line-height: 1.5; }
+.ai-analysis-boundary svg { flex: 0 0 auto; margin-top: 1px; }
+.ai-analysis-disclosure { margin: 0; color: #788781; font-size: 8px; line-height: 1.6; }
+.ai-analysis-button { width: fit-content; }
+.ai-analysis-error { border: 1px solid #ecd4d1; border-radius: 4px; padding: 8px; color: #99463f; background: #fff7f6; font-size: 8px; line-height: 1.5; }
+.ai-analysis-result { border: 1px solid #dce9e3; border-radius: 4px; padding: 9px; color: #546b62; background: #f7faf8; }
+.ai-analysis-result > div { display: flex; align-items: center; gap: 6px; color: #35796e; font-size: 8px; }
+.ai-analysis-result p { margin: 8px 0; color: #53665e; font-size: 9px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ai-analysis-result small { color: #8b9790; font-size: 7px; }
 @media (max-width: 680px) {
   .account-profile-grid { grid-template-columns: 1fr; gap: 10px; }
   .account-boundary { align-items: flex-start; font-size: 8px; line-height: 1.55; }

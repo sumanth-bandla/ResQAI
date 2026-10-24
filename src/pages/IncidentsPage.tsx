@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, CalendarDays, Database, Filter, Search } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Database, Filter, Search, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "../components/Ui";
 import { HistoricalFireTable } from "../components/HistoricalFireTable";
@@ -62,6 +62,7 @@ export function IncidentsPage() {
       />
       <PublicFeedNotice />
       {status !== "ready" || records.length === 0 ? <PublicDataEmpty action={<Link className="button button--secondary" to="/sources">Set up the archive</Link>} /> : <>
+        <div className="records-archive-note"><span className="records-archive-note__icon"><ShieldCheck size={15} /></span><span><strong>Verified public archive</strong><small>Closed historical records only · source data may be delayed · no live incident feed</small></span><span className="records-archive-note__badge"><i /> READ ONLY</span></div>
         <div className="metric-grid metric-grid--four">
           <div className="metric-card metric-card--small"><span>Records in this query</span><strong>{records.length.toLocaleString()}</strong><small>Most recent available · max 500</small></div>
           <div className="metric-card metric-card--small"><span>Mapped locations</span><strong>{mappedCount.toLocaleString()}</strong><small>Source coordinates · not live GPS</small></div>
@@ -69,13 +70,15 @@ export function IncidentsPage() {
           <div className="metric-card metric-card--small"><span>Source-record date range</span><strong className="date-range-value">{allDates[0] ? new Date(allDates[0]).toLocaleDateString() : "—"} – {allDates.at(-1) ? new Date(allDates.at(-1)!).toLocaleDateString() : "—"}</strong><small>Archive records only · 30-day delay</small></div>
         </div>
         <section className="card incidents-card">
-          <div className="tabs-row">
-            {["All records", "Mapped records", "Records without map points"].map((name) => <button key={name} onClick={() => changeFilter(() => setLocationFilter(name))} className={`text-tab${locationFilter === name ? " text-tab--active" : ""}`}>{name}<span>{name === "All records" ? records.length : name === "Mapped records" ? mappedCount : records.length - mappedCount}</span></button>)}
+          <div className="records-card-heading"><div><span>PUBLIC RECORDS</span><strong>{filtered.length.toLocaleString()} <small>matching results</small></strong></div><span className="records-card-heading__range">Up to {records.length.toLocaleString()} records loaded</span></div>
+          <div className="tabs-row" role="group" aria-label="Filter records by location availability">
+            {["All records", "Mapped records", "Records without map points"].map((name) => <button key={name} aria-pressed={locationFilter === name} onClick={() => changeFilter(() => setLocationFilter(name))} className={`text-tab${locationFilter === name ? " text-tab--active" : ""}`}>{name}<span>{name === "All records" ? records.length : name === "Mapped records" ? mappedCount : records.length - mappedCount}</span></button>)}
             <span className="tabs-spacer" />
             <a className="text-link-quiet" href="https://data.sfgov.org/d/wr8u-xric" target="_blank" rel="noreferrer">Official dataset <ArrowRight size={12} /></a>
           </div>
+          <div className="records-filter-heading"><span><SlidersHorizontal size={14} /> Search and refine</span><small>Filters apply to the loaded archive only</small></div>
           <div className="incident-filters">
-            <label className="search-control"><Search size={15} /><input value={query} onChange={(event) => changeFilter(() => setQuery(event.target.value))} placeholder="Search public ID, address or incident description" /></label>
+            <label className="search-control"><Search size={15} /><input aria-label="Search public records" value={query} onChange={(event) => changeFilter(() => setQuery(event.target.value))} placeholder="Search public ID, address or incident description" /></label>
             <select aria-label="Filter by neighborhood" value={neighborhood} onChange={(event) => changeFilter(() => setNeighborhood(event.target.value))}><option>All neighborhoods</option>{neighborhoods.map((name) => <option key={name}>{name}</option>)}</select>
             <select aria-label="Filter by recorded event" value={recordType} onChange={(event) => changeFilter(() => setRecordType(event.target.value))}><option>All record types</option>{situations.map((name) => <option key={name}>{name}</option>)}</select>
             <label className="date-filter"><CalendarDays size={13} /><input aria-label="Incident start date" type="date" value={startDate} onChange={(event) => changeFilter(() => setStartDate(event.target.value))} /></label>

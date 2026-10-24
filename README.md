@@ -102,7 +102,7 @@ The local preview links work after starting Vite with `npm run dev`. Configurati
 | **Descriptive analytics** | Counts and charts derived from the records loaded in the current archive result—no invented response-time or readiness metrics |
 | **Data pipeline** | Bounded Socrata API import, record/date/coordinate validation, chunked Supabase upserts, and a 30-day closure delay |
 | **Access controls** | Supabase email/password auth, protected application routes, persistent browser sessions, self-owned profile rows with database-generated public IDs, row-level security, and server-only import credentials |
-| **Training-only screens** | Fictional manual-review, intake, dispatch, settings, team, activity, and mobile layouts are visibly separated from the public archive; no AI/model claims or controls |
+| **Optional historical AI** | User-initiated Gemini descriptions for aggregate historical trends and one closed public record; server-side key, rate-limited Edge Function, no live or operational analysis |
 | **Responsive interface** | Desktop, tablet, and mobile layouts; keyboard-friendly forms and controls; reduced-motion and print styles |
 | **No success-shaped fallback** | The UI shows setup, loading, empty, and error states instead of swapping in sample records when the data source fails |
 
@@ -118,6 +118,8 @@ The local preview links work after starting Vite with `npm run dev`. Configurati
 | `/incidents/:id` | Detail view for a record included in the current archive result |
 | `/map` | Map of source-published historical coordinates |
 | `/analytics` | Descriptive statistics for the loaded archive records |
+| `/analytics` AI trends panel | Optional Gemini-generated description of aggregate monthly, neighborhood, and situation counts |
+| `/incidents/:id` AI summary panel | Optional Gemini summary of the selected closed historical record's date and source classifications |
 | `/sources` | Data provenance, setup instructions, and safety boundaries |
 | `/training/report`, `/training/incidents/:id` | Fictional local report-intake exercise |
 | `/training/review`, `/training/dispatch` | Fictional manual-review and dispatch-interface exercises; no AI/model is connected |
@@ -152,12 +154,13 @@ Public San Francisco Open Data
 Separate training routes ──► fictional browser-session state only
 ```
 
-First visit → sign in/register → Supabase Auth session → protected archive routes. Archive records remain read-only; the separate profile table permits each authenticated user to read their own profile and update only their display name.
+First visit → sign in/register → Supabase Auth session → protected archive routes. Archive records remain read-only; the separate profile table permits each authenticated user to read their own profile and update only their display name. Optional AI calls go from the browser to a JWT-validated Supabase Edge Function, which reads eligible records under the caller's RLS and sends minimized data to Gemini with storage disabled.
 
 | Layer | Responsibility |
 | --- | --- |
 | `scripts/sync-sf-public-fire-data.mjs` | Fetches a maximum of 500 closed records in the configured age window, validates the source values, then upserts to Supabase with a server-only key |
 | `supabase/migrations/` | Creates the archive and profile tables, indexes, RLS policies, signup trigger, and least-privilege grants |
+| `supabase/functions/historical-ai-analysis/` | Authenticates the caller, enforces a per-user request limit, reads only delayed closed records, and calls Gemini without exposing its key |
 | `src/dataContext.tsx` | Loads at most 500 newest eligible rows and exposes loading, ready, unconfigured, and error states |
 | `src/lib/supabase.ts` | Configures the Supabase browser client and rejects invalid URLs or obvious non-public keys |
 | `src/components/HistoryMap.tsx` | Renders source coordinates using Leaflet and OpenStreetMap tiles with visible attribution |
@@ -170,7 +173,8 @@ First visit → sign in/register → Supabase Auth session → protected archive
 - **React 18** and **TypeScript 5** — typed, reusable UI components
 - **Vite 6** — local development server and production bundler
 - **React Router 7** — client-side navigation and deep-linked pages
-- **Supabase Auth and JavaScript client** — email/password authentication and authenticated read-only archive access
+- **Supabase Auth and JavaScript client** — email/password authentication, read-only archive access, and authenticated Edge Function calls
+- **Supabase Edge Functions + Gemini Interactions API** — optional server-side historical descriptions, only after project configuration
 - **Leaflet** and **React Leaflet** — interactive map rendering
 - **OpenStreetMap** — community basemap tiles, with required attribution
 - **Tailwind CSS 3** and project CSS — configured styling pipeline and fine-grained responsive design
@@ -253,9 +257,23 @@ The repository does not currently include a test-runner script. During implement
 
 The user-facing copy intentionally distinguishes “Supabase accepted the request” from actual email delivery. Only the Supabase dashboard/provider delivery logs can confirm delivery.
 
+#### Optional historical AI (Gemini)
+
+AI analysis is opt-in and limited to delayed, closed public archive data. It is not a prediction or decision system and must not be used for live emergencies, triage, dispatch, responder safety, or navigation. The trends panel sends only server-calculated counts to Gemini; the individual summary sends one record's date, neighborhood, and reported classifications. Addresses, coordinates, caller details, account data, and public record identifiers are not sent to Gemini. Calls use `store: false`; availability and retention are still governed by Google AI service terms.
+
+To enable the feature after reviewing the provider's terms and data policy:
+
+1. Apply `supabase/migrations/20261024200500_add_historical_ai_rate_limit.sql` to the verified Supabase project after the profile and archive migrations. This creates a private rate-limit table and permits quota consumption only by `service_role`.
+2. Deploy `supabase/functions/historical-ai-analysis/` using the Supabase CLI while linked to the verified project: `supabase functions deploy historical-ai-analysis`. Keep JWT verification enabled; the function validates the caller and checks the database-backed quota.
+3. Create a Gemini API key in Google AI Studio, then store it only as a Supabase Edge Function secret: `supabase secrets set GEMINI_API_KEY=...`. Run that command in a secure local terminal; do not paste the key into chat, source code, `.env.local`, a `VITE_` variable, or Git.
+4. Confirm the Edge Function has the project-provided `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` secrets available. The service key is used only by the function for a restricted rate-limit RPC; archive reads use the authenticated user's JWT and existing RLS.
+5. Check Gemini billing/quota and use the UI's explicit **Generate** action. Trend prompts contain aggregate month/neighborhood/situation counts only; individual summaries contain date and source classifications without record IDs, addresses, or coordinates. Requests are limited to five per user per minute. Missing configuration, provider errors, and rate limits are shown as errors, not fake success.
+
+The feature currently uses Google's Interactions API with `store: false`; Gemini output is untrusted text and is displayed as plain text. The local browser tests do not call Gemini. No AI provider key is configured or tested.
+
 ### 5. Apply the migrations in the verified staging project
 
-Review and run [`supabase/migrations/20261024111000_create_public_historical_fire_incidents.sql`](./supabase/migrations/20261024111000_create_public_historical_fire_incidents.sql) and [`supabase/migrations/20261024193000_create_user_profiles.sql`](./supabase/migrations/20261024193000_create_user_profiles.sql) in the **confirmed non-production project only**. The archive migration grants authenticated browser users `SELECT` only and limits row visibility to incidents closed more than 30 days ago. The profile migration creates `public.profiles`, generates immutable `RSQ-XXXXXXXX` public IDs inside a database trigger, backfills existing Auth accounts, and grants authenticated users access only to their own profile and permission to update only `full_name`. New registrations need a valid `full_name` Auth metadata value for the profile trigger.
+Review and run [`supabase/migrations/20261024111000_create_public_historical_fire_incidents.sql`](./supabase/migrations/20261024111000_create_public_historical_fire_incidents.sql), [`supabase/migrations/20261024193000_create_user_profiles.sql`](./supabase/migrations/20261024193000_create_user_profiles.sql), and (if enabling AI) [`supabase/migrations/20261024200500_add_historical_ai_rate_limit.sql`](./supabase/migrations/20261024200500_add_historical_ai_rate_limit.sql) in the **confirmed non-production project only**. The archive migration grants authenticated browser users `SELECT` only and limits row visibility to incidents closed more than 30 days ago. The profile migration creates `public.profiles`, generates immutable `RSQ-XXXXXXXX` public IDs inside a database trigger, backfills existing Auth accounts, and grants authenticated users access only to their own profile and permission to update only `full_name`. New registrations need a valid `full_name` Auth metadata value for the profile trigger. The optional AI migration creates a private per-user request-limit table and an RPC callable only by the trusted Edge Function role.
 
 The migration must not be applied to production without a separate, explicitly approved review. SQL execution changes the target database; verify the project selector before running it.
 
@@ -338,8 +356,9 @@ The app requests tiles from `tile.openstreetmap.org` and displays OpenStreetMap 
 │   ├── types.ts                    Training domain types
 │   └── index.css                   Responsive design system and layout styles
 ├── supabase/
-│   ├── migrations/                 Archive and profile schemas, RLS, and grants
-│   └── tests/                      Archive and profile access policy assertions
+│   ├── functions/                  Authenticated, rate-limited historical Gemini function
+│   ├── migrations/                 Archive, profile, and AI rate-limit schemas
+│   └── tests/                      Archive, profile, and rate-limit assertions
 ├── .env.example                    Safe configuration template
 └── README.md
 ```
@@ -353,6 +372,7 @@ The app requests tiles from `tile.openstreetmap.org` and displays OpenStreetMap 
 - Historical archive access is read-only; anonymous reads and browser writes to incident records are denied. The profile table is the deliberate exception: RLS limits reads and full-name updates to the matching authenticated user's row, while column grants prevent changing the internal Auth UUID or public User ID.
 - The public User ID is a display identifier, not a credential or authorization token. The internal Auth UUID is not returned to the profile UI and must never be accepted from user-editable form fields.
 - The registered email is the Supabase Auth identity used to sign in and request password recovery. Resets require the verification link sent to that account's email; never disable confirmation to bypass it. Browser geolocation is requested only after an explicit click, is not continuously watched or stored by the app, and is cleared when hidden or the page is left. OpenStreetMap receives tile requests for the viewed region, which can reveal an approximate map area to its tile service.
+- Gemini API credentials are only stored as Supabase Edge Function secrets. The function requires a verified authenticated session, enforces a database-backed limit of five requests per minute per account, reads records with the caller's RLS, minimizes third-party input, requests non-storage mode, and never includes address/coordinates/identity data in prompts. AI text can still be inaccurate; it is explicitly non-operational.
 - The browser publishable key is public by design. The Supabase service-role key is privileged and must remain in `.env.local` for the importer only. Never expose it through a `VITE_` variable.
 - Public registration creates archive accounts, not agency identities or operational permissions. Configure email verification, rate limits, email delivery, and abuse controls in Supabase before deployment.
 - Verify that a Supabase project is a separate staging/test environment before applying migrations or importing data. Do not assume a project URL is non-production.

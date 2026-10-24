@@ -2,6 +2,7 @@ import { Activity, CalendarDays, Database, Download, MapPin } from "lucide-react
 import { Link } from "react-router-dom";
 import { Card, PageHeader, StatusMessage } from "../components/Ui";
 import { PublicDataEmpty, PublicFeedNotice } from "../components/PublicFeedStatus";
+import { HistoricalAiAnalysis } from "../components/HistoricalAiAnalysis";
 import { usePublicData } from "../dataContext";
 
 export function AnalyticsPage() {
@@ -68,6 +69,7 @@ export function AnalyticsPage() {
           <Card title="Map coverage" subtitle="Coordinate availability in the loaded archive">
             <div className="archive-coverage"><MapPin size={19} /><strong>{mappedCount.toLocaleString()} / {records.length.toLocaleString()}</strong><span>{records.length ? Math.round((mappedCount / records.length) * 100) : 0}% have valid source coordinates</span><Link className="button button--secondary" to="/map"><Activity size={14} /> Explore historical map</Link></div>
           </Card>
+          <HistoricalAiAnalysis mode="trends" />
         </div>
         {sourceUpdated && <div className="overview-footnote">Latest source update value in this result: {new Date(sourceUpdated).toLocaleString()} · Values are descriptive public records, not agency performance indicators.</div>}
       </> : <PublicDataEmpty action={<Link className="button button--secondary" to="/sources">Configure the public archive</Link>} />}
