@@ -1,414 +1,779 @@
-<div align="center">
+# ◈ ResQAI — 3D Historical Fire Incident Intelligence Platform
 
-# ◈ RESQAI
-### **A shared picture. Grounded in history.**
+### A shared picture. Grounded in history.
 
 **PUBLIC SAN FRANCISCO FIRE RECORDS · READ-ONLY ARCHIVE · NON-OPERATIONAL DEMONSTRATION**
-
-<br />
 
 ![React](https://img.shields.io/badge/React-18-149eca?style=flat-square&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6-646cff?style=flat-square&logo=vite&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-read--only-3ecf8e?style=flat-square&logo=supabase&logoColor=white)
-![OpenStreetMap](https://img.shields.io/badge/Map-OpenStreetMap-7ebc6f?style=flat-square&logo=openstreetmap&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Read--Only-3ecf8e?style=flat-square&logo=supabase&logoColor=white)
+![OpenStreetMap](https://img.shields.io/badge/Maps-OpenStreetMap-7ebc6f?style=flat-square&logo=openstreetmap&logoColor=white)
+![Design](https://img.shields.io/badge/UI-3D%20Glassmorphism-8b5cf6?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Development-orange?style=flat-square)
 
-<br />
+---
 
-> ### ◈ A carefully bounded public-data explorer
-> Explore closed historical San Francisco Fire Department records on a real OpenStreetMap basemap. Separate training screens demonstrate interface concepts with fictional local data; they are not connected to emergency services.
+## ◈ Project Vision
 
-**No live calls · No dispatch · No responder tracking · No agency authentication**
+**ResQAI is a modern, responsive historical fire-incident data explorer designed with a premium 3D-inspired interface.**
 
-</div>
+The platform provides an authenticated, read-only experience for exploring a bounded archive of publicly released San Francisco Fire Department incident records. It combines historical data, interactive maps, descriptive analytics, and optional AI-generated historical summaries in a single application.
 
-<br />
+The interface follows a futuristic visual direction inspired by three-dimensional glass panels, layered surfaces, subtle neon illumination, depth-aware cards, and professional command-center dashboards.
 
-## ◇ Project overview
+> **Important:** ResQAI is a historical data visualization project, not an emergency-response system. It is not connected to live emergency services or operational dispatch infrastructure.
 
-ResQAI is a responsive React application for browsing a limited archive of publicly released San Francisco fire incident records. Visitors sign in or create an account through Supabase email/password authentication before opening the archive. A Node.js import script fetches eligible records from the [San Francisco Open Data dataset](https://data.sfgov.org/d/wr8u-xric) and writes them to a Supabase table. The web client reads that table with the authenticated user's session and a browser-safe publishable key.
+### Core Principles
 
-The app intentionally does **not** present historic public records as active emergencies. Imports are limited to reported closed incidents from roughly 30–365 days ago, subject to the source's availability and the import cap. The browser does not silently substitute fictional incidents when configuration or data is unavailable.
+- **Historical, not live:** Explore eligible closed incidents from public records.
+- **Read-only archive:** Authenticated users can browse historical records but cannot modify incident data.
+- **Real data, honest states:** Display loading, error, empty, and configuration states without silently substituting fictional incidents.
+- **AI-assisted descriptions:** Optional, user-initiated descriptions of historical trends and individual closed records.
+- **Security by design:** Supabase authentication, row-level security, restricted database permissions, and server-side secrets.
+- **Professional 3D experience:** Add visual depth without sacrificing usability, accessibility, performance, or clarity.
 
-> [!CAUTION]
-> **This is not an emergency-response product.** It is not connected to 911, CAD, agency identity systems, dispatch, radio, responder GPS, or live incident feeds. Never use it for emergency decisions, operational navigation, or real incident reporting.
+---
 
-## ◇ Screenshots & design reference
+## ◈ 3D Design System
 
-The visual direction is based on the [ResQAI Figma design](https://www.figma.com/design/RzhtVdD740gAaXoiXnRpT3/Untitled?node-id=3-37442). The screenshots below were captured from the running app at a desktop viewport. **Supabase is not configured in these captures**, so sign-in and registration are visibly disabled until local configuration is added. The basemap requires network access to OpenStreetMap's community tile service.
+The visual design aims to make ResQAI feel like a premium analytics platform while keeping historical information easy to understand.
 
-<details>
-<summary>Sign in</summary>
+### Visual Direction
 
-![ResQAI public archive entry screen](./docs/screenshots/archive-entry.png)
+| Design element | Implementation direction |
+|---|---|
+| Overall theme | Dark, futuristic, professional |
+| Background | Deep navy with subtle gradients |
+| Glass panels | Translucent surfaces, soft borders, restrained blur |
+| Accent colors | Electric cyan, cool blue, violet |
+| Cards | Layered surfaces, gentle shadows, subtle hover depth |
+| Navigation | Minimal sidebar with clear active states |
+| Maps | Interactive Leaflet map with OpenStreetMap attribution |
+| Data visualization | Clean charts with clear labels and accessible contrast |
+| Motion | Subtle transitions and restrained perspective effects |
+| Typography | Modern, readable sans-serif typography |
+| Responsive layout | Desktop, tablet, and mobile support |
 
-</details>
+### Recommended Color Palette
 
-<details>
-<summary>Registration</summary>
+| Purpose | Color |
+|---|---|
+| Main background | `#070B18` |
+| Secondary background | `#0D1426` |
+| Glass surface | `rgba(20, 32, 56, 0.72)` |
+| Primary accent | `#22D3EE` |
+| Secondary accent | `#818CF8` |
+| Main text | `#F1F5F9` |
+| Muted text | `#94A3B8` |
+| Warning/error states | Accessible amber and red tones |
 
-![Supabase registration screen](./docs/screenshots/registration.png)
+### Recommended 3D Effects
 
-</details>
+- Layered glassmorphism cards with subtle transparency.
+- Gentle card elevation on hover.
+- Soft cyan edge illumination for selected elements.
+- Perspective transforms used sparingly.
+- Animated loading indicators for genuine loading states.
+- Smooth sidebar and page transitions.
+- Depth-aware buttons with clear hover, focus, and pressed states.
+- Respect for the user's reduced-motion preference.
 
-<details>
-<summary>Historical overview</summary>
+**Design objective:** A polished, high-tech 3D-inspired interface that remains a practical data explorer—not a simulated live emergency control room.
 
-![Historical overview in the unconfigured data state](./docs/screenshots/historical-overview.png)
+*Note: These are the intended design guidelines. The actual 3D effects must be implemented in the React components and styles.*
 
-</details>
+---
 
-<details>
-<summary>Public records</summary>
+## ◈ Project Overview
 
-![Public records page in the unconfigured data state](./docs/screenshots/public-records.png)
+ResQAI uses a React and TypeScript frontend, Supabase for authentication and database access, and Leaflet with OpenStreetMap tiles for geographic visualization.
 
-</details>
+A Node.js import script retrieves eligible historical incident records from the San Francisco Open Data platform and writes validated records to Supabase.
 
-<details>
-<summary>Historical map</summary>
+The browser accesses the archive through the authenticated user's session and a browser-safe Supabase publishable key. Database row-level security restricts access to eligible historical rows.
 
-![Historical map page in the unconfigured data state](./docs/screenshots/historical-map.png)
+The optional AI feature calls a Supabase Edge Function, which validates the authenticated user, applies a per-user request limit, reads eligible data, and requests historical descriptions from Google's Gemini API.
 
-</details>
+### Public Data Source
 
-<details>
-<summary>Sources and setup</summary>
+- **Publisher:** [San Francisco Open Data](https://data.sfgov.org/d/wr8u-xric)
+- **Dataset:** San Francisco Fire Incidents
+- **API endpoint:** `https://data.sfgov.org/resource/wr8u-xric.json`
+- **Supabase archive table:** `public.sf_fire_incidents`
+- **Map provider:** OpenStreetMap
+- **Map renderer:** Leaflet and React Leaflet
 
-![Sources and setup page](./docs/screenshots/sources-and-setup.png)
+The importer is bounded to eligible closed incidents approximately 30–365 days old, with a maximum of 500 records per run. Actual results depend on source availability and the import configuration.
 
-</details>
+The browser loads up to 500 eligible archive rows. Imports are manual; continuous synchronization is not configured.
 
-| Screen | Preview |
-| --- | --- |
-| Sign in | [`/login`](http://localhost:5173/login) |
-| Create an account | [`/register`](http://localhost:5173/register) |
-| Historical overview | [`/overview`](http://localhost:5173/overview) |
-| Public fire records | [`/incidents`](http://localhost:5173/incidents) |
-| Record detail | Open any record from the archive |
-| Historical map | [`/map`](http://localhost:5173/map) |
-| Archive analytics | [`/analytics`](http://localhost:5173/analytics) |
-| Data sources and setup | [`/sources`](http://localhost:5173/sources) |
+---
 
-The local preview links work after starting Vite with `npm run dev`. Configuration and imported records are required to see archive content.
+## ◈ Key Features
 
-## ◇ Features
+### 1. Historical Incident Archive
 
-| Area | What is included |
-| --- | --- |
-| **Public archive** | Read-only browsing, search, filters, pagination, source-linked detail pages, and honest loading/error/unconfigured/empty states |
-| **Real map** | Leaflet with OpenStreetMap tiles, visible attribution, and markers from source-published coordinates |
-| **Descriptive analytics** | Counts and charts derived from the records loaded in the current archive result—no invented response-time or readiness metrics |
-| **Data pipeline** | Bounded Socrata API import, record/date/coordinate validation, chunked Supabase upserts, and a 30-day closure delay |
-| **Access controls** | Supabase email/password auth, protected application routes, persistent browser sessions, self-owned profile rows with database-generated public IDs, row-level security, and server-only import credentials |
-| **Optional historical AI** | User-initiated Gemini descriptions for aggregate historical trends and one closed public record; server-side key, rate-limited Edge Function, no live or operational analysis |
-| **Responsive interface** | Desktop, tablet, and mobile layouts; keyboard-friendly forms and controls; reduced-motion and print styles |
-| **No success-shaped fallback** | The UI shows setup, loading, empty, and error states instead of swapping in sample records when the data source fails |
+- Browse publicly released historical fire incident records.
+- Search and filter available records.
+- Paginate through the archive.
+- Open source-linked incident detail pages.
+- Display appropriate loading, error, unconfigured, and empty states.
+- Restrict browser access to read-only archive operations.
 
-## ◇ Application routes
+### 2. Interactive Historical Map
 
-| Route | Purpose |
-| --- | --- |
-| `/login` | Supabase email/password sign-in and password recovery |
-| `/register` | Public self-registration through Supabase Auth; email confirmation follows project settings |
-| `/account` | Authenticated profile with a permanent database-generated public User ID and editable display name |
-| `/overview` | Historical archive summary and recent closed records |
-| `/incidents` | Searchable, filterable public incident archive |
-| `/incidents/:id` | Detail view for a record included in the current archive result |
-| `/map` | Map of source-published historical coordinates |
-| `/analytics` | Descriptive statistics for the loaded archive records |
-| `/analytics` AI trends panel | Optional Gemini-generated description of aggregate monthly, neighborhood, and situation counts |
-| `/incidents/:id` AI summary panel | Optional Gemini summary of the selected closed historical record's date and source classifications |
-| `/sources` | Data provenance, setup instructions, and safety boundaries |
-| `/training/report`, `/training/incidents/:id` | Fictional local report-intake exercise |
-| `/training/review`, `/training/dispatch` | Fictional manual-review and dispatch-interface exercises; no AI/model is connected |
-| `/training/settings`, `/training/team`, `/training/activity` | Example-only controls, profiles, and sample activity |
+- Explore source-published historical incident coordinates.
+- Render an OpenStreetMap basemap using Leaflet.
+- Display incident markers and associated record details.
+- Show visible map attribution.
+- Allow users to explicitly enable browser geolocation.
+- Keep the user's temporary location in page memory rather than persisting it.
 
-Legacy `/review`, `/dispatch`, `/settings`, `/team`, and `/activity` routes redirect to their clearly labeled training versions.
+The map is for historical visualization only and must not be used for emergency navigation.
 
-## ◇ Architecture
+### 3. Descriptive Analytics
+
+- Calculate counts from the records loaded into the archive.
+- Present available historical classifications and distributions.
+- Display aggregate monthly, neighborhood, and situation counts when supported by the data.
+- Avoid inventing response-time, readiness, or operational-performance metrics.
+- Clearly distinguish descriptive statistics from predictions.
+
+### 4. Optional Historical AI
+
+- Generate descriptions of aggregate historical trends.
+- Summarize one selected closed public record.
+- Use a server-side Gemini API key.
+- Validate authenticated requests through a Supabase Edge Function.
+- Enforce a database-backed limit of five requests per user per minute.
+- Request `store: false` from the provider.
+
+AI summaries are informational and may be inaccurate. They are not predictions, recommendations for emergency response, or operational decisions.
+
+### 5. Authentication and User Profiles
+
+- Supabase email/password authentication.
+- Public self-registration.
+- Email confirmation and password recovery.
+- Protected archive routes.
+- Persistent browser authentication sessions.
+- Database-generated public User IDs in the `RSQ-XXXXXXXX` format.
+- Profile display-name editing.
+- Row-level security for individual profile records.
+
+The public User ID is an identifier, not an authentication credential.
+
+### 6. Separate Training Experience
+
+Fictional training pages demonstrate interface concepts for report intake, manual review, dispatch-style layouts, team profiles, settings, and activity.
+
+Training data is local to browser-session state. It is not connected to emergency services, is not persisted as public incident data, and does not use an AI dispatch model.
+
+### 7. Responsive and Accessible UI
+
+- Desktop, tablet, and mobile layouts.
+- Keyboard-friendly forms and controls.
+- Clear validation and error messages.
+- Accessible contrast and focus states.
+- Reduced-motion support.
+- Print styles.
+- Responsive 3D-inspired cards and navigation.
+
+---
+
+## ◈ Application Routes
+
+| Route | Description |
+|---|---|
+| `/login` | Sign in and password recovery |
+| `/register` | Create an account |
+| `/auth/callback` | Process supported authentication callbacks |
+| `/account` | View public User ID and edit display name |
+| `/overview` | Historical archive overview |
+| `/incidents` | Search and filter public records |
+| `/incidents/:id` | Historical record details |
+| `/map` | Interactive historical incident map |
+| `/analytics` | Descriptive archive analytics |
+| `/sources` | Data provenance, configuration, and safety information |
+| `/training/report` | Fictional report-intake exercise |
+| `/training/incidents/:id` | Fictional training record |
+| `/training/review` | Manual-review interface demonstration |
+| `/training/dispatch` | Dispatch-interface training demonstration |
+| `/training/settings` | Example-only settings |
+| `/training/team` | Example-only team profiles |
+| `/training/activity` | Example-only activity |
+
+Legacy `/review`, `/dispatch`, `/settings`, `/team`, and `/activity` routes redirect to their clearly labeled training equivalents.
+
+Protected archive routes require authentication and valid configuration.
+
+---
+
+## ◈ System Architecture
 
 ```text
-Public San Francisco Open Data
-           │
-           │ bounded server-side import (manual)
-           ▼
-┌───────────────────────────────┐
-│ Supabase · sf_fire_incidents  │
-│ RLS: delayed rows, read-only  │
-└───────────────┬───────────────┘
-                │ authenticated browser session · SELECT only
-                ▼
-┌───────────────────────────────┐       OpenStreetMap tile service
-│ React + TypeScript archive UI │ ────► attributed Leaflet basemap
-└───────────────────────────────┘
-               │ authenticated session · own profile only
-               ▼
-┌───────────────────────────────┐
-│ Supabase · profiles           │
-│ RLS: self select/update name  │
-└───────────────────────────────┘
+           SAN FRANCISCO OPEN DATA
+                     |
+                     | Bounded manual import
+                     v
+          +-------------------------+
+          | Node.js Import Script   |
+          | Validate and limit data |
+          +------------+------------+
+                       |
+                       v
+          +-------------------------+
+          | Supabase Database       |
+          | sf_fire_incidents       |
+          | Row-level security       |
+          +------------+------------+
+                       |
+                       | Authenticated SELECT
+                       v
+          +-------------------------+
+          | React + TypeScript      |
+          | Historical Archive UI   |
+          +------------+------------+
+                       |
+             +---------+---------+
+             |                   |
+             v                   v
+     +---------------+   +----------------+
+     | Leaflet Map   |   | Analytics UI   |
+     | OpenStreetMap |   | Historical     |
+     +---------------+   | Statistics     |
+                         +----------------+
 
-Separate training routes ──► fictional browser-session state only
+     Supabase Auth ------> Protected Routes
+            |
+            v
+     User-Owned Profile
+
+     Optional Historical AI:
+     Browser -> Authenticated Edge Function
+             -> Eligible Historical Data
+             -> Gemini API
+
+     Separate Training Screens:
+     Fictional Local Data Only
 ```
 
-First visit → sign in/register → Supabase Auth session → protected archive routes. Archive records remain read-only; the separate profile table permits each authenticated user to read their own profile and update only their display name. Optional AI calls go from the browser to a JWT-validated Supabase Edge Function, which reads eligible records under the caller's RLS and sends minimized data to Gemini with storage disabled.
+### Architecture Components
 
-| Layer | Responsibility |
-| --- | --- |
-| `scripts/sync-sf-public-fire-data.mjs` | Fetches a maximum of 500 closed records in the configured age window, validates the source values, then upserts to Supabase with a server-only key |
-| `supabase/migrations/` | Creates the archive and profile tables, indexes, RLS policies, signup trigger, and least-privilege grants |
-| `supabase/functions/historical-ai-analysis/` | Authenticates the caller, enforces a per-user request limit, reads only delayed closed records, and calls Gemini without exposing its key |
-| `src/dataContext.tsx` | Loads at most 500 newest eligible rows and exposes loading, ready, unconfigured, and error states |
-| `src/lib/supabase.ts` | Configures the Supabase browser client and rejects invalid URLs or obvious non-public keys |
-| `src/components/HistoryMap.tsx` | Renders source coordinates using Leaflet and OpenStreetMap tiles with visible attribution |
-| `src/components/PublicFeedStatus.tsx` | Displays connection status without a mock-data fallback |
-| `src/pages/` | Public archive pages and separately labeled training experiences |
-| `src/state.tsx`, `src/data.ts` | Fictional sample data and in-memory interactions used only by training screens |
+| Component | Responsibility |
+|---|---|
+| `scripts/sync-sf-public-fire-data.mjs` | Fetches, validates, and imports bounded historical records |
+| `supabase/migrations/` | Defines archive, profile, and optional AI rate-limit schemas |
+| `supabase/functions/historical-ai-analysis/` | Authenticates requests, enforces quotas, and calls Gemini |
+| `src/dataContext.tsx` | Loads and manages historical archive state |
+| `src/lib/supabase.ts` | Configures the browser-safe Supabase client |
+| `src/components/HistoryMap.tsx` | Displays historical coordinates using Leaflet |
+| `src/components/PublicFeedStatus.tsx` | Displays archive configuration and connection status |
+| `src/pages/` | Contains archive, account, and training pages |
+| `src/state.tsx` | Manages fictional training interactions |
+| `src/data.ts` | Provides fictional training records |
+| `src/types.ts` | Defines training-domain types |
+| `src/App.tsx` | Configures routes and application providers |
+| `src/index.css` | Provides global styling and responsive layouts |
 
-## ◇ Tech stack
+---
 
-- **React 18** and **TypeScript 5** — typed, reusable UI components
-- **Vite 6** — local development server and production bundler
-- **React Router 7** — client-side navigation and deep-linked pages
-- **Supabase Auth and JavaScript client** — email/password authentication, read-only archive access, and authenticated Edge Function calls
-- **Supabase Edge Functions + Gemini Interactions API** — optional server-side historical descriptions, only after project configuration
-- **Leaflet** and **React Leaflet** — interactive map rendering
-- **OpenStreetMap** — community basemap tiles, with required attribution
-- **Tailwind CSS 3** and project CSS — configured styling pipeline and fine-grained responsive design
-- **Lucide React** — interface iconography
+## ◈ Technology Stack
 
-## ◇ Requirements
+| Technology | Purpose |
+|---|---|
+| React 18 | Component-based frontend |
+| TypeScript 5 | Type safety |
+| Vite 6 | Development server and production bundler |
+| React Router 7 | Client-side routing |
+| Supabase Auth | Authentication and sessions |
+| Supabase Database | Historical archive and user profiles |
+| Supabase Edge Functions | Optional server-side AI integration |
+| Gemini API | Historical descriptions |
+| Leaflet | Interactive map rendering |
+| React Leaflet | React integration for Leaflet |
+| OpenStreetMap | Community map tiles |
+| Tailwind CSS 3 | Utility-based styling |
+| Lucide React | Interface icons |
+| CSS transforms and transitions | 3D-inspired depth and motion |
 
-- Node.js **22.9 or newer** (the importer uses Node's `--env-file-if-exists` option)
-- npm compatible with the installed Node.js release
-- A Supabase project that has been explicitly verified as a **non-production staging/test environment**
+---
 
-The sign-in and registration pages can start without Supabase configuration, but authentication is disabled and protected archive routes cannot be opened until the project URL and publishable key are configured.
+## ◈ Requirements
 
-## ◇ Installation & configuration
+- Node.js **22.9 or newer**.
+- npm compatible with the installed Node.js release.
+- Git.
+- A Supabase project explicitly verified as a separate non-production staging/test environment.
+- Network access for remote authentication, data imports, map tiles, and optional AI requests.
 
-### 1. Install dependencies
+Authentication remains disabled until the required browser-safe Supabase configuration is provided.
+
+---
+
+## ◈ Installation Guide
+
+### Step 1 — Clone the repository
 
 ```bash
 git clone https://github.com/sumanth-bandla/ResQAI.git
 cd ResQAI
+```
+
+### Step 2 — Install dependencies
+
+```bash
 npm install
 ```
 
-### 2. Verify the Supabase environment
+### Step 3 — Verify the Supabase environment
 
-Before applying SQL or importing data, confirm in the Supabase dashboard that the selected project is a separate staging/test project—not production. The project reference in `.env.example` is a configuration starting point, **not proof that the target is staging**.
+Before applying database migrations or importing data, verify in the Supabase dashboard that the selected project is a separate staging/test environment.
 
-### 3. Create a local environment file
+A project URL in `.env.example` is only a configuration example; it does not establish that the project is safe to modify.
 
-Copy `.env.example` to `.env.local` and fill in the values from the verified Supabase project's API settings:
+**Do not apply the migrations or run the importer against production without a separate, explicitly approved review.**
+
+### Step 4 — Configure environment variables
+
+Copy `.env.example` to `.env.local` and replace the placeholders with the correct values from your verified Supabase project.
 
 ```dotenv
-# Browser-safe values; a publishable key or legacy anon JWT only.
+# Browser-safe configuration
 VITE_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_OR_ANON_KEY
 
-# Import-only secrets. Keep these server-side and out of VITE_ variables.
+# Server-side importer configuration
 SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
 
-# Optional public-data API token.
+# Optional public-data API token
 SF_OPEN_DATA_APP_TOKEN=
 ```
 
-`.env.local` is ignored by Git. Never paste a service-role key into source code, a `VITE_` variable, an issue, a screenshot, a commit, or chat.
+Important security rules:
 
-The development server must be restarted after creating or changing `.env.local`, because Vite loads `VITE_` variables at startup. The app deliberately keeps sign-in, registration, and protected routes disabled until both browser-safe Supabase values are present; do not replace this gate with a demo account or a service-role key.
+- Never commit `.env.local`.
+- Never put a service-role key in a `VITE_` variable.
+- Never expose privileged keys in browser code, screenshots, GitHub issues, or chat.
+- Restart Vite after changing environment variables.
+- Use the publishable key for browser access and enforce database permissions through Supabase RLS.
 
-### 4. Configure Supabase Auth
+### Step 5 — Configure Supabase authentication
 
 In the verified project's dashboard:
 
-1. Enable the **Email** provider and email/password sign-in. Keep email confirmation enabled; the client does not bypass it.
-2. In **Authentication → URL Configuration**, set Site URL to the app origin and add each exact callback/recovery URL to Redirect URLs. For local development on port 5173, allow `http://127.0.0.1:5173/auth/callback`, `http://127.0.0.1:5173/login?recovery=1`, and the corresponding `http://localhost:5173/...` URLs if you use that hostname. Add the equivalent paths for the deployed origin. Do not add broad production wildcards.
-3. Public self-registration is enabled by this app. Configure email delivery, password policy, abuse protections, and project rate limits before deployment.
+1. Enable the Email authentication provider.
+2. Configure email/password sign-in and keep email confirmation enabled.
+3. Set the appropriate Site URL.
+4. Add the exact callback and recovery URLs to Authentication → URL Configuration.
+5. Configure email delivery, password policies, rate limits, and abuse protections.
+6. Confirm that the profile trigger and required database migrations are installed.
 
-Registration confirmation redirects to `/auth/callback`; password recovery returns to `/login?recovery=1`. Supabase JS processes the supported PKCE/verification callback and the callback page verifies the returned user with Supabase before showing success. Expired, invalid, and already-used links get a recovery state. The app persists sessions through Supabase Auth and does not use a service-role key for authentication.
+For local development on port `5173`, allow the relevant callback paths for the hostname you actually use:
 
-Sign-up requests are submitted to Supabase Auth, which manages account identities in its protected `auth.users` schema and handles passwords securely. A database trigger creates a separate `profiles` row keyed by the Auth UUID and assigns its unique public User ID; passwords are never copied to the profile table. With email confirmation enabled, users must verify their email before signing in. The post-registration page reports that the request was submitted without claiming account creation or email delivery; resend is explicit, cooldown-limited, and reports whether Supabase accepted the request. Sign-out clears the current browser session locally so a network interruption does not leave this browser authenticated.
+```text
+http://localhost:5173/auth/callback
+http://localhost:5173/login?recovery=1
+```
 
-#### Email delivery, SMTP, and rate limits
+If you use `127.0.0.1`, configure the corresponding URLs separately. Configure equivalent paths for your deployed domain.
 
-The connected project's dashboard was inspected during this implementation. Its **Authentication → Emails** page offered “Set up custom SMTP” and indicated that the default templates are used, so custom SMTP was not configured at that time. The **Authentication → URL Configuration** page showed Site URL `http://localhost:3000` and no Redirect URLs; those values do not match this app's Vite port 5173 and must be corrected manually before links can return here. No production settings were changed. The rate-limit settings page could not be loaded during inspection, so the project's exact email limits were not verified.
+Do not add broad production wildcards.
 
-Supabase's built-in email service is intended for low-volume/testing and is subject to restrictive provider limits. An `Email rate limit exceeded` response is Supabase rejecting an email request; this app does not automatically retry signup or resend. The current signup form disables duplicate submissions while a request is in flight, and resend is a separate user action with a visible local cooldown. Repeated signups/resends are not a delivery workaround.
+The application distinguishes a submitted authentication request from confirmed email delivery. Supabase and the configured email provider determine actual delivery status.
 
-For reliable legitimate delivery, configure a supported custom SMTP provider in **Supabase Dashboard → Authentication → Emails → SMTP Settings**:
+### Email Delivery Notes
 
-1. Set up a transactional-email provider and verify a domain/sender you control.
-2. Publish the provider's required SPF and DKIM DNS records (and DMARC where appropriate); wait for provider verification.
-3. Enter the provider's SMTP host, port, username, password, and verified sender in Supabase. Keep SMTP credentials in the dashboard/provider, never in this browser app or a `VITE_` variable.
-4. Send one controlled test to an address you own, inspect provider delivery/bounce logs, and confirm the ResQAI callback URL is allow-listed.
-5. Review **Authentication → Rate Limits** after SMTP is configured. Adjust only to documented provider capacity and legitimate traffic; retain abuse protections and do not disable email confirmation to suppress limits.
+Supabase's built-in email service is intended for low-volume testing and may impose restrictive limits.
 
-Rate-limit recovery in the app applies a conservative five-minute client cooldown after an explicit rate-limit response. Supabase remains authoritative; its server-side limit may require a longer wait. For production, review the provider's actual retry guidance and Supabase's current dashboard limits rather than increasing the client timer to bypass them.
+For reliable legitimate email delivery:
 
-#### Safe auth verification checklist
+1. Configure a supported transactional email provider.
+2. Verify a sender domain you control.
+3. Publish the required SPF and DKIM records and configure DMARC where appropriate.
+4. Enter SMTP credentials in the Supabase dashboard, not in frontend code.
+5. Send one controlled test to a mailbox you own.
+6. Review delivery logs and Supabase rate limits.
 
-The repository does not currently include a test-runner script. During implementation, registration success, duplicate/neutral signup responses, resend acceptance/cooldown, rate-limit handling, and callback success were exercised with browser-intercepted mock Auth responses; these tests did not create accounts or send email. Invalid/weak form validation and expired-link recovery were also checked in the browser. A real sign-up, delivery, and sign-in should only be tested after the URL allow-list and email sender are configured, using one mailbox you control. Avoid repeated real signup/resend attempts, and do not use `example.invalid` in a live form as a “test.”
+Do not repeatedly submit signup or resend requests to bypass rate limits. Server-side limits remain authoritative.
 
-The user-facing copy intentionally distinguishes “Supabase accepted the request” from actual email delivery. Only the Supabase dashboard/provider delivery logs can confirm delivery.
+### Step 6 — Apply database migrations
 
-#### Optional historical AI (Gemini)
+Review the migration files in `supabase/migrations/` and apply the required migrations to the verified staging/test project:
 
-AI analysis is opt-in and limited to delayed, closed public archive data. It is not a prediction or decision system and must not be used for live emergencies, triage, dispatch, responder safety, or navigation. The trends panel sends only server-calculated counts to Gemini; the individual summary sends one record's date, neighborhood, and reported classifications. Addresses, coordinates, caller details, account data, and public record identifiers are not sent to Gemini. Calls use `store: false`; availability and retention are still governed by Google AI service terms.
+```text
+20261024111000_create_public_historical_fire_incidents.sql
+20261024193000_create_user_profiles.sql
+20261024200500_add_historical_ai_rate_limit.sql
+```
 
-To enable the feature after reviewing the provider's terms and data policy:
+The AI rate-limit migration is required only if you enable the optional historical AI feature.
 
-1. Apply `supabase/migrations/20261024200500_add_historical_ai_rate_limit.sql` to the verified Supabase project after the profile and archive migrations. This creates a private rate-limit table and permits quota consumption only by `service_role`.
-2. Deploy `supabase/functions/historical-ai-analysis/` using the Supabase CLI while linked to the verified project: `supabase functions deploy historical-ai-analysis`. Keep JWT verification enabled; the function validates the caller and checks the database-backed quota.
-3. Create a Gemini API key in Google AI Studio, then store it only as a Supabase Edge Function secret: `supabase secrets set GEMINI_API_KEY=...`. Run that command in a secure local terminal; do not paste the key into chat, source code, `.env.local`, a `VITE_` variable, or Git.
-4. Confirm the Edge Function has the project-provided `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` secrets available. The service key is used only by the function for a restricted rate-limit RPC; archive reads use the authenticated user's JWT and existing RLS.
-5. Check Gemini billing/quota and use the UI's explicit **Generate** action. Trend prompts contain aggregate month/neighborhood/situation counts only; individual summaries contain date and source classifications without record IDs, addresses, or coordinates. Requests are limited to five per user per minute. Missing configuration, provider errors, and rate limits are shown as errors, not fake success.
+The archive migration grants authenticated browser users read-only access to eligible historical records. The profile migration creates user-owned profiles, generates public IDs, and restricts profile updates. The optional AI migration creates a private request-limit table for the trusted Edge Function.
 
-The feature currently uses Google's Interactions API with `store: false`; Gemini output is untrusted text and is displayed as plain text. The local browser tests do not call Gemini. No AI provider key is configured or tested.
+Review the SQL and verify the target project before execution. Database migrations change the selected database.
 
-### 5. Apply the migrations in the verified staging project
+### Step 7 — Import historical records
 
-Review and run [`supabase/migrations/20261024111000_create_public_historical_fire_incidents.sql`](./supabase/migrations/20261024111000_create_public_historical_fire_incidents.sql), [`supabase/migrations/20261024193000_create_user_profiles.sql`](./supabase/migrations/20261024193000_create_user_profiles.sql), and (if enabling AI) [`supabase/migrations/20261024200500_add_historical_ai_rate_limit.sql`](./supabase/migrations/20261024200500_add_historical_ai_rate_limit.sql) in the **confirmed non-production project only**. The archive migration grants authenticated browser users `SELECT` only and limits row visibility to incidents closed more than 30 days ago. The profile migration creates `public.profiles`, generates immutable `RSQ-XXXXXXXX` public IDs inside a database trigger, backfills existing Auth accounts, and grants authenticated users access only to their own profile and permission to update only `full_name`. New registrations need a valid `full_name` Auth metadata value for the profile trigger. The optional AI migration creates a private per-user request-limit table and an RPC callable only by the trusted Edge Function role.
-
-The migration must not be applied to production without a separate, explicitly approved review. SQL execution changes the target database; verify the project selector before running it.
-
-### 6. Import historical public records
+After verifying the project and importer configuration, run:
 
 ```bash
 npm run data:sync:sf
 ```
 
-The importer:
+The import script:
 
-- requests San Francisco records closed between approximately 30 and 365 days ago;
-- caps each run at 500 source records and upserts in batches;
-- rejects invalid timestamps, missing required fields, and coordinates outside the San Francisco bounds;
-- never exposes the service-role credential to the browser;
-- exits with an error if configuration, the source response, or a Supabase write fails.
+- Fetches eligible closed incidents approximately 30–365 days old.
+- Caps each import run at 500 records.
+- Validates required values and timestamps.
+- Rejects invalid coordinates and records outside configured San Francisco bounds.
+- Upserts records in batches.
+- Keeps the service-role key on the server side.
+- Exits with an error if required configuration, source retrieval, or database writes fail.
 
-This command writes to the configured Supabase database. Confirm the target before running it. It is a manual import; no automatic or continuous sync is configured.
+This operation writes to the configured Supabase database. Verify the destination before running it.
 
-### 7. Start and build the application
+Imports are manual; continuous synchronization is not configured.
+
+### Step 8 — Run the application
+
+Start the development server:
 
 ```bash
 npm run dev
+```
+
+Open the local URL printed by Vite, usually:
+
+```text
+http://localhost:5173
+```
+
+Build the application:
+
+```bash
 npm run build
+```
+
+Preview the production build locally:
+
+```bash
 npm run preview
 ```
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the local Vite development server |
-| `npm run build` | Run the TypeScript project build and create `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm run data:sync:sf` | Import the bounded public historical dataset |
-| `npm audit` | Check installed dependencies for known advisories |
+### Available Commands
 
-## ◇ Data sources & freshness
+| Command | Purpose |
+|---|---|
+| `npm install` | Install dependencies |
+| `npm run dev` | Start the development server |
+| `npm run build` | Run the configured TypeScript build and create the production bundle |
+| `npm run preview` | Preview the production build |
+| `npm run data:sync:sf` | Import eligible historical records |
+| `npm audit` | Check dependencies for known security advisories |
+
+---
+
+## ◈ Optional Historical AI Configuration
+
+The historical AI feature is optional and disabled until configured.
+
+It supports descriptions of aggregate historical trends and one selected closed record. It must not be used for live emergencies, triage, dispatch, responder safety, or navigation.
+
+### Configuration
+
+1. Review the optional AI rate-limit migration.
+2. Apply `supabase/migrations/20261024200500_add_historical_ai_rate_limit.sql` to the verified staging/test database.
+3. Deploy the Edge Function from the repository root:
+
+   ```bash
+   supabase functions deploy historical-ai-analysis
+   ```
+
+4. Create a Gemini API key in Google AI Studio.
+5. Store the key only as a Supabase Edge Function secret:
+
+   ```bash
+   supabase secrets set GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+   ```
+
+   Run this command in a secure terminal and replace the placeholder locally. Do not paste the actual key into chat, source code, or Git.
+
+6. Verify that the function has the required Supabase environment variables and that JWT verification remains enabled.
+7. Confirm provider quotas and billing settings.
+8. Test using the interface's explicit Generate action.
+
+The feature limits requests to five per user per minute.
+
+Trend prompts contain aggregate month, neighborhood, and situation counts. Individual summaries contain the record date and source classifications, excluding record identifiers, addresses, and coordinates.
+
+The function requests `store: false`; provider terms and retention policies still apply. AI output is treated as untrusted text and displayed as plain text.
+
+---
+
+## ◈ Data Sources and Freshness
 
 ### San Francisco Fire Incidents
 
 - **Publisher:** [City and County of San Francisco Open Data](https://data.sfgov.org/d/wr8u-xric)
-- **API:** `https://data.sfgov.org/resource/wr8u-xric.json`
-- **Supabase table:** `public.sf_fire_incidents`
-- **Browser access:** read-only `SELECT`, filtered by row-level security
-- **Age limits:** importer selects closures from approximately 30–365 days before each run
-- **Import and display limits:** at most 500 imported records per run; the browser reads up to 500 newest records
-- **Data meaning:** the source's published incident fields and coordinates; values may be incomplete, corrected, or delayed
+- **API:** [Fire incidents JSON endpoint](https://data.sfgov.org/resource/wr8u-xric.json)
+- **Database:** `public.sf_fire_incidents`
+- **Access:** Authenticated, read-only browser queries.
+- **Age window:** Approximately 30–365 days before an import.
+- **Import limit:** 500 records per run.
+- **Browser limit:** Up to 500 eligible records.
 
-An import does not establish that a record is complete, accurate, safe for navigation, or useful for emergency decisions. Source publication timing and refresh schedules may change.
+The application displays the source's published fields and coordinates. Public data can be incomplete, delayed, corrected, or otherwise unsuitable for a particular analysis.
+
+The 30-day delay is a code-level boundary, not a guarantee of privacy, accuracy, completeness, or operational suitability.
 
 ### OpenStreetMap
 
-The app requests tiles from `tile.openstreetmap.org` and displays OpenStreetMap contributor attribution. The public tile servers are community infrastructure with a usage policy and no service-level agreement. They are not an emergency-navigation service. See the [OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/) and [copyright/attribution guidance](https://www.openstreetmap.org/copyright).
+The application uses community map tiles from:
 
-## ◇ Usage
+`https://tile.openstreetmap.org`
 
-1. Open `/login` or `/register`. Supabase authentication is required to access the protected archive.
-2. Verify your email if the project requires confirmation, then sign in.
-3. Check the source-status message. If the archive is not configured or cannot be loaded, follow `/sources`; the app does not invent fallback incidents.
-4. Search and filter `/incidents`, select an available public record, or explore published coordinates on `/map`.
-5. Use `/analytics` for descriptive counts calculated only from the loaded records.
-6. Open `/account` to view your permanent public User ID and update your display name. The registered email is managed by Supabase Auth and is not editable in the app.
-7. On `/map`, choose **Show my location** and grant the browser's location permission to temporarily display your device's reported position. It remains only in page memory; use **Hide my location** or leave the page to clear it.
-8. Use the separate `/training/*` screens only to explore fictional UI flows. Do not enter real personal information or real incident reports.
+Attribution must remain visible.
 
-## ◇ Folder structure
+- [OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/)
+- [OpenStreetMap copyright and attribution](https://www.openstreetmap.org/copyright)
 
-```text
-.
-├── public/                         Static public assets
-├── scripts/
-│   └── sync-sf-public-fire-data.mjs  Bounded, server-side archive importer
-├── src/
-│   ├── components/                 Shared shell, maps, tables, status, and UI
-│   ├── pages/                      Archive, account, and training pages
-│   ├── lib/supabase.ts             Browser-safe Supabase setup
-│   ├── App.tsx                     Routes and provider composition
-│   ├── data.ts                     Fictional training records only
-│   ├── dataContext.tsx             Read-only public archive state
-│   ├── state.tsx                   Local training simulator state
-│   ├── types.ts                    Training domain types
-│   └── index.css                   Responsive design system and layout styles
-├── supabase/
-│   ├── functions/                  Authenticated, rate-limited historical Gemini function
-│   ├── migrations/                 Archive, profile, and AI rate-limit schemas
-│   └── tests/                      Archive, profile, and rate-limit assertions
-├── .env.example                    Safe configuration template
-└── README.md
-```
-
-## ◇ Security & safety considerations
-
-> **No live emergency operations. Authentication only protects archive access; it is not agency identity or authorization. No dispatch.**
-
-- This app is a public-data archive and UI demonstration, not an emergency-service or agency operations platform.
-- No live 911, CAD, call-taking, dispatch, radio, SMS, agency SSO, responder GPS, or notification service is connected.
-- Historical archive access is read-only; anonymous reads and browser writes to incident records are denied. The profile table is the deliberate exception: RLS limits reads and full-name updates to the matching authenticated user's row, while column grants prevent changing the internal Auth UUID or public User ID.
-- The public User ID is a display identifier, not a credential or authorization token. The internal Auth UUID is not returned to the profile UI and must never be accepted from user-editable form fields.
-- The registered email is the Supabase Auth identity used to sign in and request password recovery. Resets require the verification link sent to that account's email; never disable confirmation to bypass it. Browser geolocation is requested only after an explicit click, is not continuously watched or stored by the app, and is cleared when hidden or the page is left. OpenStreetMap receives tile requests for the viewed region, which can reveal an approximate map area to its tile service.
-- Gemini API credentials are only stored as Supabase Edge Function secrets. The function requires a verified authenticated session, enforces a database-backed limit of five requests per minute per account, reads records with the caller's RLS, minimizes third-party input, requests non-storage mode, and never includes address/coordinates/identity data in prompts. AI text can still be inaccurate; it is explicitly non-operational.
-- The browser publishable key is public by design. The Supabase service-role key is privileged; store it only in the ignored `.env.local` for the local importer or in Supabase's managed Edge Function environment for the trusted rate-limit call. Never expose it through a `VITE_` variable.
-- Public registration creates archive accounts, not agency identities or operational permissions. Configure email verification, rate limits, email delivery, and abuse controls in Supabase before deployment.
-- Verify that a Supabase project is a separate staging/test environment before applying migrations or importing data. Do not assume a project URL is non-production.
-- The 30-day delay is a code-level data boundary, not an emergency-data classification, guarantee of privacy, or authorization control for another system.
-- Training records are fictional and local to browser-session state. They are not persisted as public records or agency audit data.
-- The OSM community tile service is best-effort and not suitable for operational navigation.
-- Review applicable source terms, privacy implications, data retention, RLS policy, and project access before deployment or import.
-- Do not collect or submit real caller, patient, responder, or emergency information through the training screens.
-
-## ◇ Validation
-
-```bash
-npm run build
-npm audit
-```
-
-The production build runs the strict TypeScript project build before bundling. The Supabase SQL test file documents expected browser read/write permissions; it must be run against a disposable, verified test database, not production.
-
-## ◇ Future enhancements
-
-- Add automated component, route, and data-pipeline tests for unconfigured, loading, error, empty, and populated states.
-- Add visual regression captures for desktop, tablet, and mobile layouts.
-- Add an approved screenshot gallery of the Figma design and public archive screens.
-- Add monitoring for import age, source schema changes, source availability, and failed Supabase writes.
-- Evaluate a dedicated tile provider or self-hosted map for higher-volume non-operational use, while retaining attribution and licensing requirements.
-- Improve accessible map alternatives and tabular access for all spatial information.
-- Review data-governance and retention requirements before expanding source coverage.
-
-Operational use, live dispatch, or real agency accounts are **not** planned for this demonstration without a separate safety, security, governance, accessibility, and human-factors review.
-
-## ◇ License
-
-No software license is currently specified. All rights remain with the repository owner unless a license is added. San Francisco public data and OpenStreetMap data/tiles remain subject to their respective publishers' terms and attribution requirements. The Figma file is the visual design reference, not a software license.
-
-<div align="center">
+OpenStreetMap community tile infrastructure is best-effort and does not provide an emergency-navigation service or a guaranteed service level.
 
 ---
 
-**RESQAI · PUBLIC HISTORICAL ARCHIVE · READ-ONLY · NOT FOR EMERGENCY USE**
+## ◈ Security and Privacy
+
+Security is a core requirement, not a decorative feature.
+
+### Database Access
+
+- Anonymous browser reads and writes to incident records are denied.
+- Authenticated users receive read-only access to eligible historical records.
+- Row-level security limits which archive rows can be read.
+- Profile access is restricted to the matching authenticated user.
+- Profile update permissions are limited to the display name.
+- Internal Auth UUIDs and public User IDs cannot be changed through the profile form.
+- Service-role credentials remain outside the browser.
+
+### Authentication
+
+- Supabase manages account identities and passwords.
+- Email confirmation follows project settings.
+- Password recovery uses the configured verification flow.
+- Public registration creates archive accounts, not agency identities.
+- Authentication does not grant emergency-service authorization.
+
+### Browser Geolocation
+
+- Location permission is requested only after an explicit user action.
+- The displayed position is temporary page state.
+- The application does not continuously watch or persist the location.
+- Hiding the location or leaving the page clears the temporary display.
+
+Map tile requests can reveal the approximate map area being viewed to the tile service.
+
+### Historical AI
+
+- API credentials are stored as managed Edge Function secrets.
+- Requests require authenticated sessions.
+- A database-backed per-user request limit is enforced.
+- Only minimized historical data is sent to the AI provider.
+- Addresses, coordinates, account information, and record identifiers are excluded from prompts.
+- AI-generated descriptions can be incorrect and must not be treated as authoritative.
+
+### Training Data
+
+Training pages use fictional local data and are not connected to the public archive or emergency services.
+
+Never enter real caller, patient, responder, or emergency information into training screens.
+
+---
+
+## ◈ Repository Structure
+
+```text
+ResQAI/
+├── public/
+│   └── Static assets
+├── docs/
+│   └── screenshots/
+├── scripts/
+│   └── sync-sf-public-fire-data.mjs
+├── src/
+│   ├── components/
+│   │   ├── HistoryMap.tsx
+│   │   └── PublicFeedStatus.tsx
+│   ├── pages/
+│   ├── lib/
+│   │   └── supabase.ts
+│   ├── App.tsx
+│   ├── data.ts
+│   ├── dataContext.tsx
+│   ├── state.tsx
+│   ├── types.ts
+│   └── index.css
+├── supabase/
+│   ├── functions/
+│   │   └── historical-ai-analysis/
+│   ├── migrations/
+│   └── tests/
+├── .env.example
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── README.md
+└── vite.config.ts
+```
+
+The exact directory contents may vary with the current repository version.
+
+---
+
+## ◈ Screenshots and Design Reference
+
+The original visual direction references the [ResQAI Figma design](https://www.figma.com/design/RzhtVdD740gAaXoiXnRpT3/Untitled?node-id=3-37442).
+
+Add screenshots captured from the actual running application to `docs/screenshots/`.
+
+Suggested gallery:
+
+<details>
+<summary><strong>Sign-in screen</strong></summary>
+
+![ResQAI sign-in screen](./docs/screenshots/archive-entry.png)
+
+</details>
+
+<details>
+<summary><strong>Registration screen</strong></summary>
+
+![ResQAI registration screen](./docs/screenshots/registration.png)
+
+</details>
+
+<details>
+<summary><strong>Historical overview</strong></summary>
+
+![ResQAI historical overview](./docs/screenshots/historical-overview.png)
+
+</details>
+
+<details>
+<summary><strong>Public records</strong></summary>
+
+![ResQAI public incident archive](./docs/screenshots/public-records.png)
+
+</details>
+
+<details>
+<summary><strong>Historical map</strong></summary>
+
+![ResQAI historical map](./docs/screenshots/historical-map.png)
+
+</details>
+
+<details>
+<summary><strong>Sources and configuration</strong></summary>
+
+![ResQAI sources and setup](./docs/screenshots/sources-and-setup.png)
+
+</details>
+
+These paths are expected repository locations; ensure the corresponding image files exist before publishing. If a screenshot has not yet been captured, add it after the relevant page is implemented.
+
+For the 3D redesign, capture genuine screenshots of the finished interface rather than using mockups as evidence of implemented functionality.
+
+---
+
+## ◈ Validation and Testing
+
+Run the configured production build:
+
+```bash
+npm run build
+```
+
+Check installed dependencies:
+
+```bash
+npm audit
+```
+
+The repository does not currently include a dedicated test-runner script.
+
+Existing implementation checks have included browser-intercepted mock authentication responses and SQL assertions documenting expected database permissions. Mock browser tests do not create real accounts or verify actual email delivery.
+
+Before deployment, validate the following in a disposable, verified test environment:
+
+- Sign-in and registration.
+- Email confirmation and password recovery.
+- Protected route access.
+- Profile ownership and display-name updates.
+- Archive read-only access.
+- Row-level security policies.
+- Import validation and failure handling.
+- Loading, error, unconfigured, and empty states.
+- Map attribution and coordinate rendering.
+- AI authentication, rate limits, and failure handling, if enabled.
+- Keyboard navigation and reduced-motion behavior.
+- Responsive layouts and 3D effect performance.
+
+Do not run database permission tests or destructive test cases against production.
+
+---
+
+## ◈ Future Enhancements
+
+- Complete the 3D-inspired interface redesign across all React pages.
+- Introduce reusable glassmorphism and depth-aware components.
+- Add restrained perspective interactions and smoother transitions.
+- Improve map accessibility with equivalent tabular views.
+- Add automated component, route, and importer tests.
+- Add visual regression testing for desktop, tablet, and mobile.
+- Monitor import age, source schema changes, and failed database writes.
+- Add clear source-freshness information.
+- Evaluate an appropriate dedicated tile provider for higher-volume use.
+- Improve performance on lower-powered mobile devices.
+- Review data governance, privacy, and retention before expanding coverage.
+
+Live dispatch, real agency accounts, and operational emergency functionality are not planned for this demonstration without a separate safety, security, governance, accessibility, and human-factors review.
+
+---
+
+## ◈ Contributing
+
+Contributions are welcome when they preserve the project's security and safety boundaries.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make focused changes.
+4. Run the production build.
+5. Review database permissions and secret handling if your changes affect the backend.
+6. Submit a pull request with a clear explanation and screenshots where relevant.
+
+Do not include API secrets, private credentials, real incident information, or unverified operational claims in contributions.
+
+---
+
+## ◈ License
+
+No software license is currently specified in this repository. All rights remain with the repository owner unless a license is added.
+
+San Francisco public data and OpenStreetMap data and tiles remain subject to their respective terms, attribution, and licensing requirements. The Figma file is a visual design reference, not a software license.
+
+---
+
+<div align="center">
+
+### ◈ RESQAI
+
+**A shared picture. Grounded in history.**
+
+3D-Inspired Interface · Historical Public Data · Read-Only Archive
+
+**NOT CONNECTED TO LIVE EMERGENCY SERVICES · NOT FOR EMERGENCY USE**
 
 </div>
