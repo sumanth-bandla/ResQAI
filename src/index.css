@@ -90,8 +90,8 @@ a { color: inherit; }
 .login-map-head { display: flex; height: 33px; align-items: center; justify-content: space-between; padding: 0 11px; border-bottom: 1px solid rgb(225 237 226 / 13%); color: #d6e6db; font-size: 7px; font-weight: 650; letter-spacing: .85px; }
 .login-map-head > span { display: flex; align-items: center; gap: 6px; }
 .login-map-head i { width: 6px; height: 6px; border-radius: 50%; background: #75d4a2; box-shadow: 0 0 7px #75d4a277; }
-.login-map-wrap .map-illustration { height: clamp(170px, 24vh, 230px); border: 0; border-radius: 0; }
-.login-map-wrap .map-markers { inset: 0; }
+.historical-map-preview { display: block; width: 100%; height: clamp(150px, 22vh, 205px); }
+.login-map-caption { margin: 0; padding: 7px 10px; border-top: 1px solid rgb(225 237 226 / 12%); color: #c8d9ce; font-size: 7px; line-height: 1.5; }
 .login-map-callout { position: absolute; top: 36%; left: 47%; display: flex; align-items: center; gap: 7px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 4px; padding: 7px; color: #ffd1bc; background: #17443feF; box-shadow: 0 3px 12px #173e3960; transform: translate(7px, -105%); }
 .login-map-callout > span { display: flex; flex-direction: column; gap: 3px; }
 .login-map-callout strong { color: #f2f7f3; font-size: 8px; }
@@ -150,6 +150,23 @@ a { color: inherit; }
 .remember-email small { margin-left: auto; color: #9ba6a2; font-size: 7px; }
 .login-message { display: flex; align-items: flex-start; gap: 7px; border: 1px solid #d8e8e5; border-radius: 4px; padding: 8px; color: #55756f; background: #f3f8f6; font-size: 8px; line-height: 1.5; }
 .login-message svg { flex: 0 0 auto; }
+.verification-pending { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; border: 1px solid #dfe9e4; border-radius: 6px; padding: 15px; background: #f8fbf9; }
+.verification-pending__icon { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid #cce3d5; border-radius: 50%; color: #34735c; background: #eaf6ee; }
+.verification-pending h3 { margin: 0; color: #30473f; font-size: 14px; font-weight: 650; }
+.verification-pending > p { margin: 0; color: #65786f; font-size: 9px; line-height: 1.65; overflow-wrap: anywhere; }
+.verification-pending > p strong { color: #405b4e; font-weight: 650; }
+.verification-pending .login-submit { margin-top: 2px; }
+.verification-edit { align-self: center; }
+.verification-help { color: #7b8982 !important; font-size: 8px !important; }
+.auth-result-page { display: grid; min-height: 100vh; place-items: center; padding: 24px; background: #f4f7f5; }
+.auth-result-panel { display: flex; width: min(100%, 440px); flex-direction: column; align-items: center; gap: 13px; border: 1px solid #e0e8e3; border-radius: 8px; padding: 30px; background: #fff; box-shadow: 0 16px 48px rgb(28 53 43 / 7%); text-align: center; }
+.auth-result-panel > .brand { margin-bottom: 14px; }
+.auth-result-panel h1 { margin: 0; color: #30453d; font-size: 23px; font-weight: 650; letter-spacing: -.5px; }
+.auth-result-panel p { margin: 0; color: #6f7f77; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.auth-result-panel small { margin-top: 9px; color: #86928c; font-size: 9px; line-height: 1.5; }
+.auth-result-icon--success { color: #25815d; }
+.auth-result-icon--error { color: #a7554d; }
+.auth-result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
 .login-submit { width: 100%; min-height: 41px; font-size: 10px; }
 .button-spinner { width: 13px; height: 13px; border: 2px solid rgb(255 255 255 / 42%); border-top-color: white; border-radius: 50%; animation: spin .65s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -665,7 +682,7 @@ a { color: inherit; }
   .login-story__copy { margin: 27px 0 17px; }
   .login-story__copy h1 { margin: 12px 0 8px; font-size: clamp(31px, 7.8vw, 42px); letter-spacing: -1.3px; }
   .login-lead { max-width: 460px; font-size: 10px; }
-  .login-map-wrap .map-illustration { height: clamp(150px, 38vw, 205px); }
+  .historical-map-preview { height: clamp(140px, 38vw, 190px); }
   .login-map-callout { top: 37%; left: 46%; }
   .login-map-legend { gap: clamp(11px, 3.4vw, 22px); font-size: 7px; }
   .login-story__footer { padding-top: 11px; }
@@ -717,7 +734,7 @@ a { color: inherit; }
   .overview-grid, .overview-lower-grid, .incident-detail-grid, .new-incident-grid, .review-grid, .dispatch-grid, .map-workspace-grid, .analytics-grid, .settings-grid { grid-template-columns: 1fr; gap: 10px; }
   .map-illustration { height: clamp(190px, 55vw, 265px); }
   .map-illustration--large { height: clamp(220px, 58vw, 300px); }
-  .login-map-wrap .map-illustration { height: clamp(150px, 38vw, 205px); }
+  .historical-map-preview { height: clamp(140px, 38vw, 190px); }
   .login-map-callout { top: 37%; left: 46%; }
   .incident-preview__row { min-height: 42px; }
   .readiness-list { padding-right: 10px; padding-left: 10px; }
@@ -821,3 +838,35 @@ a { color: inherit; }
 .sidebar-source-link:hover { color: #176f6a; background: #f3f8f6; }
 .sidebar-signout { border-top: 1px solid #edf0ef; border-radius: 0; padding-top: 8px; }
 .signout-error { padding: 0 18px 12px; }
+.account-profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.account-boundary { display: flex; align-items: center; gap: 8px; border: 1px solid #dce9e4; border-radius: 5px; padding: 10px 12px; color: #678078; background: #f7faf8; font-size: 9px; }
+.account-boundary > svg { flex: 0 0 auto; color: #16837c; }
+.account-boundary strong { color: #405b53; font-weight: 650; }
+.account-id-panel { display: flex; min-height: 59px; align-items: center; gap: 11px; margin: 0 12px 8px; border: 1px solid #e6ece9; border-radius: 5px; padding: 9px; background: #fafcfb; }
+.account-id-icon { display: grid; width: 32px; height: 32px; flex: 0 0 auto; place-items: center; border-radius: 5px; color: #157c76; background: #e7f3ef; }
+.account-id-panel code { flex: 1; color: #31514b; font-size: 14px; font-weight: 700; letter-spacing: .7px; }
+.account-id-note { margin: 0; padding: 0 12px 12px; color: #7c8a85; font-size: 8px; line-height: 1.6; }
+.account-profile-form { display: flex; flex-direction: column; gap: 8px; padding: 0 12px 12px; }
+.account-profile-form > label { margin-top: 3px; color: #60716c; font-size: 9px; font-weight: 620; }
+.account-input { display: flex; min-height: 35px; align-items: center; gap: 8px; border: 1px solid #dfe6e3; border-radius: 4px; padding: 0 9px; color: #84928d; background: #fff; }
+.account-input:focus-within { border-color: #5da7a0; box-shadow: 0 0 0 2px rgb(31 151 146 / 10%); }
+.account-input input { width: 100%; min-width: 0; border: 0; outline: 0; color: #3e504a; background: transparent; font-size: 10px; }
+.account-input--readonly { background: #f8faf9; }
+.account-input--readonly input { color: #778681; }
+.account-profile-form > small { margin-top: -4px; color: #89958f; font-size: 8px; line-height: 1.5; }
+.account-profile-form .button { width: fit-content; margin-top: 5px; }
+.account-meta-list { display: flex; flex-direction: column; padding: 0 12px 10px; }
+.account-meta-list > div { display: flex; min-height: 48px; align-items: center; gap: 10px; border-top: 1px solid #edf1ef; color: #769087; }
+.account-meta-list > div:first-child { border-top: 0; }
+.account-meta-list > div > svg { flex: 0 0 auto; color: #16837c; }
+.account-meta-list > div > span { display: flex; flex-direction: column; gap: 3px; }
+.account-meta-list small { color: #89958f; font-size: 8px; }
+.account-meta-list strong { color: #455952; font-size: 9px; font-weight: 610; }
+.account-loading { display: flex; min-height: 140px; align-items: center; justify-content: center; gap: 9px; color: #6d817a; font-size: 10px; }
+.map-location-notice, .map-location-error { display: flex; align-items: center; gap: 7px; border: 1px solid #d7e8e4; border-radius: 4px; padding: 8px 10px; color: #4a766e; background: #f2f8f5; font-size: 8px; line-height: 1.5; }
+.map-location-notice svg { flex: 0 0 auto; }
+.map-location-error { border-color: #ecd9cf; color: #8a5946; background: #fff8f3; }
+@media (max-width: 680px) {
+  .account-profile-grid { grid-template-columns: 1fr; gap: 10px; }
+  .account-boundary { align-items: flex-start; font-size: 8px; line-height: 1.55; }
+}

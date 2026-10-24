@@ -4,6 +4,7 @@ import { Database, LoaderCircle } from "lucide-react";
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { OperationsShell } from "./components/OperationsShell";
 import { LoginPage } from "./pages/LoginPage";
+import { AuthCallbackPage } from "./pages/AuthCallbackPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { IncidentsPage } from "./pages/IncidentsPage";
 import { IncidentDetailPage } from "./pages/IncidentDetailPage";
@@ -17,6 +18,7 @@ import { GenericPage } from "./pages/GenericPage";
 import { MobilePage } from "./pages/MobilePage";
 import { SourcesPage } from "./pages/SourcesPage";
 import { TrainingIncidentPage } from "./pages/TrainingIncidentPage";
+import { AccountProfilePage } from "./pages/AccountProfilePage";
 import { AppStateProvider } from "./state";
 import { PublicDataProvider } from "./dataContext";
 import { supabase, supabaseConfigured } from "./lib/supabase";
@@ -40,16 +42,24 @@ function App() {
       setAuthLoading(false);
     });
 
-    void supabase.auth.getSession().then(({ data, error }) => {
-      if (!active) return;
-      if (error) {
-        setAuthError(error.message);
+    void supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) {
+          setAuthError(error.message);
+          setSession(null);
+        } else {
+          setSession(data.session);
+        }
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+        setAuthError(error instanceof Error ? error.message : "Could not read the saved account session.");
         setSession(null);
-      } else {
-        setSession(data.session);
-      }
-      setAuthLoading(false);
-    });
+      })
+      .finally(() => {
+        if (active) setAuthLoading(false);
+      });
 
     return () => {
       active = false;
@@ -62,20 +72,30 @@ function App() {
       ? "ResQAI — Mobile training simulator"
       : location.pathname === "/register"
         ? "ResQAI — Create account"
-        : location.pathname === "/login"
+        : location.pathname === "/auth/callback"
+          ? "ResQAI — Verify email"
+          : location.pathname === "/account"
+            ? "ResQAI — Your account"
+          : location.pathname === "/login"
           ? "ResQAI — Sign in"
           : "ResQAI — Historical public archive";
   }, [location.pathname]);
 
   return (
     <Routes>
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/login" element={authLoading ? <AuthChecking /> : session && !recoveryMode ? <Navigate to="/overview" replace /> : <LoginPage mode="login" />} />
           <Route path="/register" element={authLoading ? <AuthChecking /> : session ? <Navigate to="/overview" replace /> : <LoginPage mode="register" />} />
           <Route element={<RequireAuth session={session} loading={authLoading} error={authError} />}>
             <Route path="/mobile" element={<MobilePage mode="overview" />} />
             <Route path="/mobile/incidents/:id" element={<MobilePage mode="incident" />} />
             <Route path="/mobile/review/:id" element={<MobilePage mode="review" />} />
-            <Route path="/" element={<OperationsShell onSignOut={async () => { const { error } = await supabase!.auth.signOut(); if (error) throw error; }} />}>
+            <Route path="/" element={<OperationsShell onSignOut={async () => {
+              if (!supabase) throw new Error("Supabase authentication is not configured.");
+              const { error } = await supabase.auth.signOut({ scope: "local" });
+              if (error) throw error;
+              setSession(null);
+            }} />}>
               <Route index element={<Navigate to="/overview" replace />} />
               <Route path="overview" element={<OverviewPage />} />
               <Route path="incidents" element={<IncidentsPage />} />
@@ -97,6 +117,7 @@ function App() {
               <Route path="training/dispatch" element={<DispatchPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="sources" element={<SourcesPage />} />
+              <Route path="account" element={<AccountProfilePage />} />
               <Route path="*" element={<Navigate to="/overview" replace />} />
             </Route>
           </Route>

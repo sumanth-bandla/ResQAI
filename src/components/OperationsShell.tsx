@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Activity, BookOpenCheck, ClipboardCheck, Database, LayoutDashboard, LifeBuoy, LogOut, Map as MapIcon,
-  Menu, Search, Settings, Shield, Siren, Users, X,
+  Menu, Search, Settings, Shield, Siren, Users, UserRound, X,
 } from "lucide-react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Brand } from "./Brand";
@@ -48,6 +48,7 @@ export function OperationsShell({ onSignOut }: { onSignOut: () => void }) {
           <div className="nav-section-label">PUBLIC ARCHIVE</div>
           {navLinks(archiveNavigation)}
           <NavLink to="/sources" onClick={() => setMobileOpen(false)} className={({ isActive }) => `side-link${isActive ? " side-link--active" : ""}`}><Database size={16} strokeWidth={1.8} /><span>Sources & setup</span></NavLink>
+          <NavLink to="/account" onClick={() => setMobileOpen(false)} className={({ isActive }) => `side-link${isActive ? " side-link--active" : ""}`}><UserRound size={16} strokeWidth={1.8} /><span>My account</span></NavLink>
           <div className="nav-separator" />
           <div className="nav-section-label">SEPARATE TRAINING DEMOS</div>
           {navLinks(trainingNavigation)}

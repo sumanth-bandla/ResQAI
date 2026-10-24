@@ -24,11 +24,20 @@ function FitRecords({ records }: { records: PublicFireIncident[] }) {
   return null;
 }
 
+function FocusLocation({ location }: { location: [number, number] | null }) {
+  const map = useMap();
+  useEffect(() => {
+    if (location) map.flyTo(location, 14, { duration: 0.8 });
+  }, [location, map]);
+  return null;
+}
+
 export function HistoryMap({
   records,
   height = "300px",
   selectedId,
   onSelect,
+  userLocation = null,
   center = SAN_FRANCISCO_CENTER,
   zoom = 12,
 }: {
@@ -36,6 +45,7 @@ export function HistoryMap({
   height?: string;
   selectedId?: string;
   onSelect?: (record: PublicFireIncident) => void;
+  userLocation?: [number, number] | null;
   center?: [number, number];
   zoom?: number;
 }) {
@@ -54,6 +64,7 @@ export function HistoryMap({
       >
         <TileLayer url={TILE_URL} attribution={ATTRIBUTION} maxZoom={19} />
         <FitRecords records={locatedRecords} />
+        <FocusLocation location={userLocation} />
         {locatedRecords.map((record) => (
           <CircleMarker
             key={record.id}
@@ -77,8 +88,22 @@ export function HistoryMap({
             </Popup>
           </CircleMarker>
         ))}
+        {userLocation && (
+          <CircleMarker
+            center={userLocation}
+            radius={8}
+            pathOptions={{ color: "#ffffff", weight: 3, fillColor: "#16837c", fillOpacity: 1 }}
+          >
+            <Popup>
+              <div className="historical-popup">
+                <strong>Your browser-reported location</strong>
+                <span>Shown only in this browser session. This is not responder tracking or emergency navigation.</span>
+              </div>
+            </Popup>
+          </CircleMarker>
+        )}
       </MapContainer>
-      <span className="history-map__count">{locatedRecords.length.toLocaleString()} archived locations</span>
+      <span className="history-map__count">{locatedRecords.length.toLocaleString()} archived locations{userLocation ? " · your location is shown" : ""}</span>
     </div>
   );
 }

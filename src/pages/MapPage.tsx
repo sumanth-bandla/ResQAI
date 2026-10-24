@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Database, MapPin, Search } from "lucide-react";
+import { Database, LocateFixed, MapPin, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, PageHeader, StatusMessage } from "../components/Ui";
 import { HistoryMap } from "../components/HistoryMap";
@@ -12,6 +12,9 @@ export function MapPage() {
   const [neighborhood, setNeighborhood] = useState("All neighborhoods");
   const [showMarkers, setShowMarkers] = useState(true);
   const [selectedId, setSelectedId] = useState<string>();
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState("");
 
   const neighborhoods = useMemo(
     () => [...new Set(records.map((record) => record.neighborhood).filter((value): value is string => Boolean(value)))].sort(),
@@ -26,25 +29,55 @@ export function MapPage() {
   const located = filtered.filter((record) => record.latitude !== null && record.longitude !== null);
   const selected = records.find((record) => record.id === selectedId);
 
+  function showMyLocation() {
+    setLocationError("");
+    if (!navigator.geolocation) {
+      setLocationError("This browser does not support location access.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation([position.coords.latitude, position.coords.longitude]);
+        setLocating(false);
+      },
+      (error) => {
+        setLocating(false);
+        setLocationError(error.code === error.PERMISSION_DENIED
+          ? "Location permission was not granted. Enable it in your browser settings if you want to show your location."
+          : error.code === error.TIMEOUT
+            ? "The browser could not determine your location in time. Try again when location services are available."
+            : "The browser could not determine your location. Check your device location settings and try again.");
+      },
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 },
+    );
+  }
+
   return (
     <div className="page-stack">
       <PageHeader eyebrow="PUBLIC DATA / HISTORICAL GEOGRAPHY" title="San Francisco record map" description="Real OpenStreetMap streets · published historical SFFD incident coordinates." action={<span className="source-readonly-badge"><Database size={13} /> HISTORICAL · READ ONLY</span>} />
       <PublicFeedNotice />
       <StatusMessage tone="warning">These are reported historical locations from closed incidents—not active emergencies, live tracking, navigation directions, or a CAD/GPS feed. OpenStreetMap tiles are community-operated with no availability SLA.</StatusMessage>
-      {status !== "ready" || records.length === 0 ? <PublicDataEmpty action={<Link className="button button--secondary" to="/sources">Set up the read-only archive</Link>} /> : <>
+      {status !== "ready" ? <PublicDataEmpty action={<Link className="button button--secondary" to="/sources">Set up the read-only archive</Link>} /> : <>
+        {records.length === 0 && <StatusMessage tone="info">No historical records are currently available. You can still open the map and optionally show your own browser-reported location.</StatusMessage>}
         <div className="map-workspace-grid">
           <div className="map-workspace-main">
             <div className="map-toolbar">
               <label><Search size={15} /><input aria-label="Search public records on the map" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search public incident ID, address or description" /></label>
               <select aria-label="Filter by neighborhood" value={neighborhood} onChange={(event) => setNeighborhood(event.target.value)}><option>All neighborhoods</option>{neighborhoods.map((name) => <option key={name}>{name}</option>)}</select>
               <button className="button button--secondary button--small" onClick={() => setShowMarkers((value) => !value)}>{showMarkers ? "Hide records" : "Show records"}</button>
+              <button className="button button--secondary button--small" onClick={showMyLocation} disabled={locating}>{locating ? "Finding location…" : <><LocateFixed size={13} />Show my location</>}</button>
+              {userLocation && <button className="button button--quiet button--small" onClick={() => { setUserLocation(null); setLocationError(""); }}>Hide my location</button>}
               <span className="map-toolbar-live"><i /> CLOSED EVENTS · NOT LIVE</span>
             </div>
+            {locationError && <div className="map-location-error" role="alert">{locationError}</div>}
+            {userLocation && <div className="map-location-notice" role="status"><MapPin size={13} /> Your current location is shown in this browser session only. It is not stored or sent by ResQAI. Map tile requests may reveal the viewed map area to OpenStreetMap.</div>}
             <HistoryMap
               records={showMarkers ? located.slice(0, 500) : []}
               height="min(58vh, 580px)"
               selectedId={selectedId}
               onSelect={(record) => setSelectedId(record.id)}
+              userLocation={userLocation}
             />
             <div className="map-geography"><span>{located.length.toLocaleString()} matched historical locations · showing at most 500</span><span>Map tiles © OpenStreetMap contributors</span></div>
           </div>
