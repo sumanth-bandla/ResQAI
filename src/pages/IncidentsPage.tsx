@@ -62,7 +62,7 @@ export function IncidentsPage() {
       />
       <PublicFeedNotice />
       {status !== "ready" || records.length === 0 ? <PublicDataEmpty action={<Link className="button button--secondary" to="/sources">Set up the archive</Link>} /> : <>
-        <div className="records-archive-note"><span className="records-archive-note__icon"><ShieldCheck size={15} /></span><span><strong>Verified public archive</strong><small>Closed historical records only · source data may be delayed · no live incident feed</small></span><span className="records-archive-note__badge"><i /> READ ONLY</span></div>
+        <div className="records-archive-note"><span className="records-archive-note__icon"><ShieldCheck size={15} /></span><span><strong>Official public archive</strong><small>Closed historical records only · source data may be delayed · no live incident feed</small></span><span className="records-archive-note__badge"><i /> READ ONLY</span></div>
         <div className="metric-grid metric-grid--four">
           <div className="metric-card metric-card--small"><span>Records in this query</span><strong>{records.length.toLocaleString()}</strong><small>Most recent available · max 500</small></div>
           <div className="metric-card metric-card--small"><span>Mapped locations</span><strong>{mappedCount.toLocaleString()}</strong><small>Source coordinates · not live GPS</small></div>

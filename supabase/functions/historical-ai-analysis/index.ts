@@ -100,7 +100,7 @@ function readOutput(interaction: GeminiInteraction): string {
     .filter((step) => step.type === "model_output")
     .flatMap((step) => step.content ?? [])
     .filter((part) => part.type === "text" && typeof part.text === "string")
-    .map((part) => part.text!.trim())
+    .map((part) => (part.text ?? "").trim())
     .filter(Boolean)
     .join("\n")
     .slice(0, 6000);
@@ -125,7 +125,7 @@ Deno.serve(async (request) => {
     global: { headers: { Authorization: `Bearer ${match[1]}` } },
     auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
   });
-  const { data: userResult, error: authError } = await userClient.auth.getUser();
+  const { data: userResult, error: authError } = await userClient.auth.getUser(match[1]);
   if (authError || !userResult.user) {
     return respond(401, { code: "not_authenticated", message: "Your session could not be verified. Sign in again." });
   }
